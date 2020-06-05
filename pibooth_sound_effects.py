@@ -29,12 +29,15 @@ def pibooth_startup(app, cfg):
         if sound.endswith(".wav"):
             app.sounds[sound[:-4]] = pygame.mixer.Sound(os.path.join(cfg.get('SOUNDS', 'sounds_path'), sound))
 
-
+@pibooth.hookimpl
+def state_chosen_enter(app):
+    """Start a new capture sequence."""
+    app.sounds["button"].play()
 
 @pibooth.hookimpl
 def state_choose_enter(app):
     """Start a new capture sequence."""
-    app.sounds["01_La"].play()
+    app.sounds["button"].play()
 
 @pibooth.hookimpl
 def state_capture_enter(app):
