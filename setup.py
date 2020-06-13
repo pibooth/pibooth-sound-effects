@@ -4,7 +4,7 @@
 import sys
 from io import open
 import os.path as osp
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 HERE = osp.abspath(osp.dirname(__file__))
@@ -47,11 +47,12 @@ def main():
         install_requires=[
             'pibooth>=2.0.0',
         ],
+        include_package_data=True,
         options={
             'bdist_wheel':
                 {'universal': True}
         },
-        zip_safe=False,  # Don't install the lib as an .egg zipfile
+        zip_safe=True,  # Don't install the lib as an .egg zipfile
         entry_points={'pibooth': ["pibooth_sound_effects = pibooth_sound_effects"]},
     )
 
