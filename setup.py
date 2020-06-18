@@ -24,7 +24,7 @@ def main():
             'Environment :: Other Environment',
             'Intended Audience :: Developers',
             'Intended Audience :: End Users/Desktop',
-            'License :: OSI Approved :: GPLv3',
+            'License :: OSI Approved :: GNU Affero General Public License v3',
             'Operating System :: POSIX :: Linux',
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.4',
