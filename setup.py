@@ -4,12 +4,12 @@
 import sys
 from io import open
 import os.path as osp
-from setuptools import setup, find_packages
+from setuptools import setup
 
+import pibooth_sound_effects as plugin
 
 HERE = osp.abspath(osp.dirname(__file__))
 sys.path.insert(0, HERE)
-import pibooth_sound_effects as plugin
 
 
 def main():
