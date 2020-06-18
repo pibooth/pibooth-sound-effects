@@ -1,7 +1,7 @@
 
-====================
+=====================
 pibooth-sound-effects
-====================
+=====================
 
 |PythonVersions| |PypiPackage| |Downloads|
 
@@ -9,6 +9,10 @@ pibooth-sound-effects
 application.
 
 It adds sound effects to the application:
+- When pressing on the first menu --> click
+- When selecting a layout --> click
+- During the countdown --> countdown
+- When entering the "thank you" menu --> applause
 
 Install
 -------
