@@ -37,8 +37,11 @@ configuration:
 
 .. note:: Edit the configuration by running the command ``pibooth --config``.
 
-Sounds file shall be .wav and have the name of the state in which it shall be played. 
-Each sound is played once, when entering the corresponding state.
+Sounds file shall be .wav and have the name of the state in which it shall be played.
+Each sound is played once, when entering the corresponding state except:
+
+- the `wait` state were the sound is played in loop
+- the `preview` state were the sound is played once for each number in the countdown
 
 .. |PythonVersions| image:: https://img.shields.io/badge/python-2.7+ / 3.6+-red.svg
    :target: https://www.python.org/downloads
