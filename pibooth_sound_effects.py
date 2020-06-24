@@ -18,6 +18,9 @@ def pibooth_configure(cfg):
     """Declare the new configuration options"""
     cfg.add_option('SOUNDS', 'sounds_path', "~/.config/pibooth/sounds",
                    "Path to the sounds")
+    cfg.add_option('GENERAL', 'enable_sound', True,
+                   "Enable sound",
+                   "Enable sound", ['True', 'False'])
 
 @pibooth.hookimpl
 def pibooth_reset(cfg, hard):
@@ -47,65 +50,75 @@ def pibooth_cleanup():
 
 #--- Wait State ---------------------------------------------------------------
 @pibooth.hookimpl
-def state_wait_enter(app):
+def state_wait_enter(app, cfg):
     """Actions performed when application enter in Wait state.
     """
-    if "wait" in app.sounds:
-        app.sounds["wait"].play()
+    if "wait" in app.sounds and cfg.getboolean('GENERAL', 'enable_sound'):
+        app.sounds["wait"].play(loops=-1)
+
+@pibooth.hookimpl
+def state_wait_do(app, cfg):
+    """Actions performed when application enter in Wait state.
+    """
+    if not cfg.getboolean('GENERAL', 'enable_sound') and "wait" in app.sounds:
+        app.sounds["wait"].stop()
 
 
 #--- Choose State -------------------------------------------------------------
 @pibooth.hookimpl
-def state_choose_enter(app):
+def state_choose_enter(app, cfg):
     """Actions performed when application enter in Choose state.
     """
-    if "choose" in app.sounds:
-        app.sounds["choose"].play()
+    if cfg.getboolean('GENERAL', 'enable_sound'):
+        if "wait" in app.sounds:
+            app.sounds["wait"].stop()
+        if "choose" in app.sounds:
+            app.sounds["choose"].play()
 
 #--- Chosen State -------------------------------------------------------------
 @pibooth.hookimpl
-def state_chosen_enter(app):
+def state_chosen_enter(app, cfg):
     """Actions performed when application enter in Chosen state.
     """
-    if "chosen" in app.sounds:
+    if "chosen" in app.sounds and cfg.getboolean('GENERAL', 'enable_sound'):
         app.sounds["chosen"].play()
 
 #--- Preview State ------------------------------------------------------------
 @pibooth.hookimpl
-def state_preview_enter(app):
+def state_preview_enter(app, cfg):
     """Actions performed when application enter in Preview state.
     """
-    if "preview" in app.sounds:
-        app.sounds["preview"].play()
+    if "preview" in app.sounds and cfg.getboolean('GENERAL', 'enable_sound'):
+        app.sounds["preview"].play(loops=cfg.getint("WINDOW","preview_delay")-1)
 
 #--- Capture State ------------------------------------------------------------
 @pibooth.hookimpl
-def state_capture_enter(app):
+def state_capture_enter(app, cfg):
     """Actions performed when application enter in Capture state.
     """
-    if "capture" in app.sounds:
+    if "capture" in app.sounds and cfg.getboolean('GENERAL', 'enable_sound'):
         app.sounds["capture"].play()
 
 #--- Processing State ---------------------------------------------------------
 @pibooth.hookimpl
-def state_processing_enter(app):
+def state_processing_enter(app, cfg):
     """Actions performed when application enter in Processing state.
     """
-    if "processing" in app.sounds:
+    if "processing" in app.sounds and cfg.getboolean('GENERAL', 'enable_sound'):
         app.sounds["processing"].play()
 
 #--- PrintView State ----------------------------------------------------------
 @pibooth.hookimpl
-def state_print_enter(app):
+def state_print_enter(app, cfg):
     """Actions performed when application enter in Print state.
     """
-    if "print" in app.sounds:
+    if "print" in app.sounds and cfg.getboolean('GENERAL', 'enable_sound'):
         app.sounds["print"].play()
 
 #--- Finish State -------------------------------------------------------------
 @pibooth.hookimpl
-def state_finish_enter(app):
-    """Actions performed when application enter in Print state.
+def state_finish_enter(app, cfg):
+    """Actions performed when application enter in Finish state.
     """
-    if "finish" in app.sounds:
+    if "finish" in app.sounds and cfg.getboolean('GENERAL', 'enable_sound'):
         app.sounds["finish"].play()
