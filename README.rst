@@ -29,11 +29,6 @@ This is the extra configuration options that can be added in the ``pibooth``
 configuration:
 
 .. code-block:: ini
-
-    [GENERAL]
-    
-    # Enable sound
-    enable_sound = True
     
     [SOUNDS]
 
