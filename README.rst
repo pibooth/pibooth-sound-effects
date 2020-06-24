@@ -30,9 +30,14 @@ configuration:
 
 .. code-block:: ini
 
+    [GENERAL]
+    
+    # Enable sound
+    enable_sound = True
+    
     [SOUNDS]
 
-    PATH TO THE SOUNDS FOLDER
+    # PATH TO THE SOUNDS FOLDER
     sounds_path = ~/.config/pibooth/sounds
 
 .. note:: Edit the configuration by running the command ``pibooth --config``.
