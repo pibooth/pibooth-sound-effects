@@ -51,14 +51,15 @@ def state_wait_enter(app):
     """Actions performed when application enter in Wait state.
     """
     if "wait" in app.sounds:
-        app.sounds["wait"].play()
-
+        app.sounds["wait"].play(loops=-1)
 
 #--- Choose State -------------------------------------------------------------
 @pibooth.hookimpl
 def state_choose_enter(app):
     """Actions performed when application enter in Choose state.
     """
+    if "wait" in app.sounds:
+        app.sounds["wait"].stop()
     if "choose" in app.sounds:
         app.sounds["choose"].play()
 
@@ -72,11 +73,11 @@ def state_chosen_enter(app):
 
 #--- Preview State ------------------------------------------------------------
 @pibooth.hookimpl
-def state_preview_enter(app):
+def state_preview_enter(app, cfg):
     """Actions performed when application enter in Preview state.
     """
     if "preview" in app.sounds:
-        app.sounds["preview"].play()
+        app.sounds["preview"].play(loops=cfg.getint("WINDOW","preview_delay")-1)
 
 #--- Capture State ------------------------------------------------------------
 @pibooth.hookimpl
@@ -105,7 +106,7 @@ def state_print_enter(app):
 #--- Finish State -------------------------------------------------------------
 @pibooth.hookimpl
 def state_finish_enter(app):
-    """Actions performed when application enter in Print state.
+    """Actions performed when application enter in Finish state.
     """
     if "finish" in app.sounds:
         app.sounds["finish"].play()

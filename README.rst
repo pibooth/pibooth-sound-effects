@@ -29,10 +29,10 @@ This is the extra configuration options that can be added in the ``pibooth``
 configuration:
 
 .. code-block:: ini
-
+    
     [SOUNDS]
 
-    PATH TO THE SOUNDS FOLDER
+    # PATH TO THE SOUNDS FOLDER
     sounds_path = ~/.config/pibooth/sounds
 
 .. note:: Edit the configuration by running the command ``pibooth --config``.
