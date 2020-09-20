@@ -43,7 +43,7 @@ def main():
             'photobooth',
             'pygame'
         ],
-        py_modules=['pibooth_sound_effects'],
+        packages=['pibooth_sound_effects'],
         install_requires=[
             'pibooth>=2.0.0',
         ],
@@ -53,7 +53,7 @@ def main():
                 {'universal': True}
         },
         zip_safe=True,  # Don't install the lib as an .egg zipfile
-        entry_points={'pibooth': ["pibooth_sound_effects = pibooth_sound_effects"]},
+        entry_points={'pibooth': ["pibooth_sound_effects = pibooth_sound_effects.pibooth_sound_effects"]},
     )
 
 if __name__ == '__main__':

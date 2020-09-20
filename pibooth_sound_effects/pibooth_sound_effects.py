@@ -9,8 +9,6 @@ import pygame
 import pibooth
 
 
-__version__ = "0.0.2"
-
 
 
 @pibooth.hookimpl
