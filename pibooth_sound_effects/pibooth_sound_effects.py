@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""Pibooth plugin for sound effects"""
-
 import os
 import os.path as osp
 import shutil
@@ -9,13 +7,12 @@ import pygame
 import pibooth
 
 
-
-
 @pibooth.hookimpl
 def pibooth_configure(cfg):
     """Declare the new configuration options"""
     cfg.add_option('SOUNDS', 'sounds_path', "~/.config/pibooth/sounds",
-                   "Path to the sounds")
+                   "Path to the sounds folder")
+
 
 @pibooth.hookimpl
 def pibooth_reset(cfg, hard):
@@ -24,6 +21,7 @@ def pibooth_reset(cfg, hard):
     if not osp.isdir(sound_path) or hard:
         source_sound_path = osp.join(osp.dirname(osp.abspath(__file__)), 'sounds')
         shutil.copytree(source_sound_path, sound_path)
+
 
 @pibooth.hookimpl
 def pibooth_startup(app, cfg):
@@ -75,7 +73,7 @@ def state_preview_enter(app, cfg):
     """Actions performed when application enter in Preview state.
     """
     if "preview" in app.sounds:
-        app.sounds["preview"].play(loops=cfg.getint("WINDOW","preview_delay")-1)
+        app.sounds["preview"].play(loops=cfg.getint("WINDOW", "preview_delay") - 1)
 
 #--- Capture State ------------------------------------------------------------
 @pibooth.hookimpl
