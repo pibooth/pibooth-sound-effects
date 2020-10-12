@@ -10,7 +10,7 @@ import pibooth
 @pibooth.hookimpl
 def pibooth_configure(cfg):
     """Declare the new configuration options"""
-    cfg.add_option('SOUNDS', 'sounds_path', "~/.config/pibooth/sounds",
+    cfg.add_option('SOUNDS', 'sounds_path', "sounds",
                    "Path to the sounds folder")
 
 
