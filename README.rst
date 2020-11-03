@@ -27,23 +27,30 @@ Install
 Configuration
 -------------
 
-This is the extra configuration options that can be added in the ``pibooth``
-configuration:
+Here below the new configuration options available in the `pibooth`_ configuration.
+**The keys and their default values are automatically added to your configuration
+after first** `pibooth`_ **restart.**
 
 .. code-block:: ini
-    
+
     [SOUNDS]
 
-    # PATH TO THE SOUNDS FOLDER
-    sounds_path = ~/.config/pibooth/sounds
+    # Path to the sounds folder
+    sounds_path = sounds
 
 .. note:: Edit the configuration by running the command ``pibooth --config``.
+
+Customize sounds
+----------------
 
 Sounds file shall be .wav and have the name of the state in which it shall be played.
 Each sound is played once, when entering the corresponding state except:
 
 - the ``wait`` state were the sound is played in loop
 - the ``preview`` state were the sound is played once for each number in the countdown
+
+Custom sounds can be added by replacing exiting sound files of the sounds folder
+(by default ``~/.config/pibooth/sounds``) with custom ones.
 
 .. |PythonVersions| image:: https://img.shields.io/badge/python-2.7+ / 3.6+-red.svg
    :target: https://www.python.org/downloads
