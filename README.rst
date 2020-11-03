@@ -36,7 +36,7 @@ after first** `pibooth`_ **restart.**
     [SOUNDS]
 
     # Path to the sounds folder
-    sounds_path = sounds
+    sounds_path = ~/.config/pibooth/sounds
 
 .. note:: Edit the configuration by running the command ``pibooth --config``.
 
