@@ -62,7 +62,7 @@ In addition to the standard states, other sound files are accepted:
   - if you want to play the same sound for each time of the countdown, name it as ``preview_countdown.wav``,
   - if you want to play different sounds for each time of the countdown, simply add corresponding files in the sound folder (e.g.: ``3.wav``, ``2.wav``, ``1.wav``)
 
-   .. note::  These specific sounds are cutted to be 1 second long, and if some are missing, it will be replaced either by ``preview_countdown.wav`` (if it exists) or one second of silence.
+    .. note::  These specific sounds are cutted to be 1 second long, and if some are missing, it will be replaced either by ``preview_countdown.wav`` (if it exists) or one second of silence.
 
 .. |PythonVersions| image:: https://img.shields.io/badge/python-2.7+ / 3.6+-red.svg
    :target: https://www.python.org/downloads
