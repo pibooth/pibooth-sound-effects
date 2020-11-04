@@ -7,6 +7,23 @@ import pygame
 import pibooth
 
 
+def handle_sounds(app, state):
+    """Actions performed when application enter the defined state.
+    """
+    # stop looping sounds
+    for sound_key in app.sounds:
+        if sound_key[:-5] == "_loop":
+            app.sounds[sound_key].stop()
+    
+    # play sound
+    if state in app.sounds:
+        app.sounds[state].play()
+
+    # play loop sound
+    if f"{state}_loop" in app.sounds:
+        app.sounds[f"{state}_loop"].play(loops=-1)
+
+
 @pibooth.hookimpl
 def pibooth_configure(cfg):
     """Declare the new configuration options"""
@@ -73,65 +90,53 @@ def pibooth_cleanup():
 def state_wait_enter(app):
     """Actions performed when application enter in Wait state.
     """
-    if "wait_loop" in app.sounds:
-        app.sounds["wait_loop"].play(loops=-1)
-    if "wait" in app.sounds:
-        app.sounds["wait"].play()
+    handle_sounds(app, "wait")
 
 #--- Choose State -------------------------------------------------------------
 @pibooth.hookimpl
 def state_choose_enter(app):
     """Actions performed when application enter in Choose state.
     """
-    if "wait_loop" in app.sounds:
-        app.sounds["wait_loop"].stop()
-    if "choose" in app.sounds:
-        app.sounds["choose"].play()
+    handle_sounds(app, "choose")
 
 #--- Chosen State -------------------------------------------------------------
 @pibooth.hookimpl
 def state_chosen_enter(app):
     """Actions performed when application enter in Chosen state.
     """
-    if "chosen" in app.sounds:
-        app.sounds["chosen"].play()
+    handle_sounds(app, "chosen")
 
 #--- Preview State ------------------------------------------------------------
 @pibooth.hookimpl
 def state_preview_enter(app):
     """Actions performed when application enter in Preview state.
     """
-    if "preview" in app.sounds:
-        app.sounds["preview"].play()
+    handle_sounds(app, "preview")
 
 #--- Capture State ------------------------------------------------------------
 @pibooth.hookimpl
 def state_capture_enter(app):
     """Actions performed when application enter in Capture state.
     """
-    if "capture" in app.sounds:
-        app.sounds["capture"].play()
+    handle_sounds(app, "capture")
 
 #--- Processing State ---------------------------------------------------------
 @pibooth.hookimpl
 def state_processing_enter(app):
     """Actions performed when application enter in Processing state.
     """
-    if "processing" in app.sounds:
-        app.sounds["processing"].play()
+    handle_sounds(app, "processing")
 
 #--- PrintView State ----------------------------------------------------------
 @pibooth.hookimpl
 def state_print_enter(app):
     """Actions performed when application enter in Print state.
     """
-    if "print" in app.sounds:
-        app.sounds["print"].play()
+    handle_sounds(app, "print")
 
 #--- Finish State -------------------------------------------------------------
 @pibooth.hookimpl
 def state_finish_enter(app):
     """Actions performed when application enter in Finish state.
     """
-    if "finish" in app.sounds:
-        app.sounds["finish"].play()
+    handle_sounds(app, "wait")
