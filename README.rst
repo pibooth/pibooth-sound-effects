@@ -58,9 +58,9 @@ In addition to the standard states, other sound files are accepted:
 - ``wait`` state: if you want to play a sound in loop, name it ``wait_loop.wav``
 - ``preview`` state:
  
- - if you have a preview sound (``preview.wav`` file), then it will play when entering the state,
- - if you want to play the same sound for each time of the countdown, name it as ``preview_countdown.wav``,
- - if you want to play different sounds for each time of the countdown, simply add corresponding files in the sound folder (e.g.: ``3.wav``, ``2.wav``, ``1.wav``)
+  - if you have a preview sound (``preview.wav`` file), then it will play when entering the state,
+  - if you want to play the same sound for each time of the countdown, name it as ``preview_countdown.wav``,
+  - if you want to play different sounds for each time of the countdown, simply add corresponding files in the sound folder (e.g.: ``3.wav``, ``2.wav``, ``1.wav``)
 
    .. note::  These specific sounds are cutted to be 1 second long, and if some are missing, it will be replaced either by ``preview_countdown.wav`` (if it exists) or one second of silence.
 
