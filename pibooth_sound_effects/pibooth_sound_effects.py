@@ -12,7 +12,7 @@ def handle_sounds(app, state):
     """
     # stop looping sounds
     for sound_key in app.sounds:
-        if sound_key[:-5] == "_loop":
+        if sound_key[-5:] == "_loop":
             app.sounds[sound_key].stop()
     
     # play sound
