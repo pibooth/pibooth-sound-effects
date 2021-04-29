@@ -5,6 +5,7 @@ import os.path as osp
 import shutil
 import pygame
 import pibooth
+from pibooth.utils import LOGGER
 
 
 def handle_sounds(app, state):
@@ -14,7 +15,7 @@ def handle_sounds(app, state):
     for sound_key in app.sounds:
         if sound_key[-5:] == "_loop":
             app.sounds[sound_key].stop()
-    
+
     # play sound
     if state in app.sounds:
         app.sounds[state].play()
@@ -35,8 +36,12 @@ def pibooth_configure(cfg):
 def pibooth_reset(cfg, hard):
     """Populate sounds folder if it doesn't exists"""
     sound_path = cfg.getpath('SOUNDS', 'sounds_path')
-    if not osp.isdir(sound_path) or hard:
+    source_sound_path = osp.join(osp.dirname(osp.abspath(__file__)), 'sounds')
+    if hard and osp.isdir(sound_path):
+        shutil.rmtree(sound_path, ignore_errors=True)
+    if not osp.isdir(sound_path):
         source_sound_path = osp.join(osp.dirname(osp.abspath(__file__)), 'sounds')
+        LOGGER.info("Generate sounds directory in '%s'", sound_path)
         shutil.copytree(source_sound_path, sound_path)
 
 
@@ -85,56 +90,72 @@ def pibooth_cleanup():
     """
     pygame.mixer.quit()
 
-#--- Wait State ---------------------------------------------------------------
+# --- Wait State ---------------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_wait_enter(app):
     """Actions performed when application enter in Wait state.
     """
     handle_sounds(app, "wait")
 
-#--- Choose State -------------------------------------------------------------
+# --- Choose State -------------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_choose_enter(app):
     """Actions performed when application enter in Choose state.
     """
     handle_sounds(app, "choose")
 
-#--- Chosen State -------------------------------------------------------------
+# --- Chosen State -------------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_chosen_enter(app):
     """Actions performed when application enter in Chosen state.
     """
     handle_sounds(app, "chosen")
 
-#--- Preview State ------------------------------------------------------------
+# --- Preview State ------------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_preview_enter(app):
     """Actions performed when application enter in Preview state.
     """
     handle_sounds(app, "preview")
 
-#--- Capture State ------------------------------------------------------------
+# --- Capture State ------------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_capture_enter(app):
     """Actions performed when application enter in Capture state.
     """
     handle_sounds(app, "capture")
 
-#--- Processing State ---------------------------------------------------------
+# --- Processing State ---------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_processing_enter(app):
     """Actions performed when application enter in Processing state.
     """
     handle_sounds(app, "processing")
 
-#--- PrintView State ----------------------------------------------------------
+# --- PrintView State ----------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_print_enter(app):
     """Actions performed when application enter in Print state.
     """
     handle_sounds(app, "print")
 
-#--- Finish State -------------------------------------------------------------
+# --- Finish State -------------------------------------------------------------
+
+
 @pibooth.hookimpl
 def state_finish_enter(app):
     """Actions performed when application enter in Finish state.
