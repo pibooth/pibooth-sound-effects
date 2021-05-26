@@ -61,11 +61,11 @@ In addition to the standard ``{state}.wav`` and ``{state_loop}.wav`` states, oth
 - if you want to play the same sound for each time of the countdown, name it as ``preview_countdown.wav``,
 - if you want to play different sounds for each time of the countdown, simply add corresponding files in the sound folder (e.g.: ``3.wav``, ``2.wav``, ``1.wav``)
 
-  .. note::  These specific sounds are cutted to be 1 second long, and if some are missing, it will be replaced either by ``preview_countdown.wav`` (if it exists) or one second of silence.
+  .. note::  These specific sounds are cut to be 1 second long, and if some are missing, it will be replaced either by ``preview_countdown.wav`` (if it exists) or one second of silence.
 
 .. |PythonVersions| image:: https://img.shields.io/badge/python-3.6+-red.svg
    :target: https://www.python.org/downloads
-   :alt: Python 2.7+/3.6+
+   :alt: Python 3.6+
 
 .. |PypiPackage| image:: https://badge.fury.io/py/pibooth-sound-effects.svg
    :target: https://pypi.org/project/pibooth-sound-effects

@@ -6,10 +6,10 @@ from io import open
 import os.path as osp
 from setuptools import setup
 
-import pibooth_sound_effects as plugin
 
 HERE = osp.abspath(osp.dirname(__file__))
 sys.path.insert(0, HERE)
+import pibooth_sound_effects as plugin  # nopep8 : import shall be done after adding setup to paths
 
 
 def main():
@@ -45,17 +45,15 @@ def main():
             'pygame'
         ],
         packages=['pibooth_sound_effects'],
+        python_requires=">=3.6",
         install_requires=[
             'pibooth>=2.0.0',
         ],
         include_package_data=True,
-        options={
-            'bdist_wheel':
-                {'universal': True}
-        },
         zip_safe=True,  # Don't install the lib as an .egg zipfile
         entry_points={'pibooth': ["pibooth_sound_effects = pibooth_sound_effects.pibooth_sound_effects"]},
     )
+
 
 if __name__ == '__main__':
     main()
