@@ -51,7 +51,7 @@ def main():
         ],
         include_package_data=True,
         zip_safe=True,  # Don't install the lib as an .egg zipfile
-        entry_points={'pibooth': ["pibooth_sound_effects = pibooth_sound_effects.pibooth_sound_effects"]},
+        entry_points={'pibooth': ["pibooth_sound_effects = pibooth_sound_effects.plugin"]},
     )
 
 
