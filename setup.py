@@ -47,7 +47,7 @@ def main():
         packages=['pibooth_sound_effects'],
         python_requires=">=3.10",
         install_requires=[
-            'pibooth>=2.0.0,<3',
+            'pibooth>=2.0.0',
         ],
         include_package_data=True,
         zip_safe=False,  # Don't install the lib as an .egg zipfile
