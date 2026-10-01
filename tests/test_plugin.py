@@ -156,3 +156,28 @@ def test_capture_delay_cancelled_on_next_state(app, sounds_path):
     plugin.state_processing_enter(app)
     time.sleep(0.4)
     assert app.sounds['capture'].played == []
+
+
+def test_countdown_updated_on_preview_delay_change(app, sounds_path):
+    cfg = FakeConfig(sounds_path, preview_delay=3)
+    plugin.pibooth_startup(app, cfg)
+    assert len(app.sounds['preview'].get_raw()) == 3 * bytes_per_second()
+
+    cfg.values[('WINDOW', 'preview_delay')] = 5
+    plugin.state_preview_enter(app, cfg)
+    assert len(app.sounds['preview'].get_raw()) == 5 * bytes_per_second()
+
+    cfg.values[('WINDOW', 'preview_delay')] = 0
+    plugin.state_preview_enter(app, cfg)
+    assert 'preview' not in app.sounds
+
+
+def test_preview_sound_not_replaced_on_preview_delay_change(app, sounds_path):
+    shutil.copy(sounds_path / 'capture.wav', sounds_path / 'preview.wav')
+    cfg = FakeConfig(sounds_path, preview_delay=3)
+    plugin.pibooth_startup(app, cfg)
+    length = len(app.sounds['preview'].get_raw())
+
+    cfg.values[('WINDOW', 'preview_delay')] = 5
+    plugin.state_preview_enter(app, cfg)
+    assert len(app.sounds['preview'].get_raw()) == length
