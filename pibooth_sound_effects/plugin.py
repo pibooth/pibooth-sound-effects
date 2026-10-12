@@ -3,26 +3,78 @@
 import os
 import os.path as osp
 import shutil
+import threading
 import pygame
 import pibooth
 from pibooth.utils import LOGGER
 
 
-def handle_sounds(app, state):
+def stop_delayed_sound(app):
+    """Cancel the sound waiting to be played (if any).
+    """
+    timer = getattr(app, 'sounds_timer', None)
+    if timer:
+        timer.cancel()
+        app.sounds_timer = None
+
+
+def handle_sounds(app, state, delay=0):
     """Actions performed when application enter the defined state.
     """
-    # stop looping sounds
-    for sound_key in app.sounds:
-        if sound_key[-5:] == "_loop":
-            app.sounds[sound_key].stop()
+    sounds = getattr(app, 'sounds', {})
+
+    # stop delayed and looping sounds of the previous state
+    stop_delayed_sound(app)
+    for sound_key in sounds:
+        if sound_key.endswith("_loop"):
+            sounds[sound_key].stop()
 
     # play sound
-    if state in app.sounds:
-        app.sounds[state].play()
+    if state in sounds:
+        if delay > 0:
+            app.sounds_timer = threading.Timer(delay, sounds[state].play)
+            app.sounds_timer.daemon = True
+            app.sounds_timer.start()
+        else:
+            sounds[state].play()
 
     # play loop sound
-    if f"{state}_loop" in app.sounds:
-        app.sounds[f"{state}_loop"].play(loops=-1)
+    if f"{state}_loop" in sounds:
+        sounds[f"{state}_loop"].play(loops=-1)
+
+
+def update_countdown(app, cfg):
+    """Generate the preview sound from the countdown sounds, if the preview
+    delay has changed since the last generation.
+    """
+    preview_delay = cfg.getint("WINDOW", "preview_delay")
+    if getattr(app, 'sounds_countdown_delay', None) == preview_delay:
+        return
+    app.sounds_countdown_delay = preview_delay
+    app.sounds.pop("preview", None)
+
+    frequency, size, channels = pygame.mixer.get_init()
+    one_second_bytes_length = frequency * channels * abs(size) // 8
+    preview_sound_raw = bytes(0)
+    for i in range(preview_delay, 0, -1):
+        if str(i) in app.sounds:
+            raw_sound = app.sounds[str(i)].get_raw()
+        elif "preview_countdown" in app.sounds:
+            raw_sound = app.sounds["preview_countdown"].get_raw()
+        else:
+            # add one second of silence in the raw signal
+            raw_sound = bytes(one_second_bytes_length)
+
+        if len(raw_sound) > one_second_bytes_length:
+            # Sound too long
+            raw_sound = raw_sound[:one_second_bytes_length]
+        elif len(raw_sound) < one_second_bytes_length:
+            # Sound too short
+            raw_sound += bytes(one_second_bytes_length - len(raw_sound))
+        preview_sound_raw += raw_sound
+
+    if preview_sound_raw:
+        app.sounds["preview"] = pygame.mixer.Sound(buffer=preview_sound_raw)
 
 
 @pibooth.hookimpl
@@ -30,13 +82,15 @@ def pibooth_configure(cfg):
     """Declare the new configuration options"""
     cfg.add_option('SOUNDS', 'sounds_path', "~/.config/pibooth/sounds",
                    "Path to the sounds folder")
+    cfg.add_option('SOUNDS', 'capture_delay', 0.0,
+                   "Delay in seconds before playing the capture sound (to synchronize it with the camera shutter)",
+                   "Capture sound delay", [str(i / 10) for i in range(0, 21)])
 
 
 @pibooth.hookimpl
 def pibooth_reset(cfg, hard):
     """Populate sounds folder if it doesn't exists"""
     sound_path = cfg.getpath('SOUNDS', 'sounds_path')
-    source_sound_path = osp.join(osp.dirname(osp.abspath(__file__)), 'sounds')
     if hard and osp.isdir(sound_path):
         shutil.rmtree(sound_path, ignore_errors=True)
     if not osp.isdir(sound_path):
@@ -48,46 +102,39 @@ def pibooth_reset(cfg, hard):
 @pibooth.hookimpl
 def pibooth_startup(app, cfg):
     """Init the pygame mixer and load available sounds"""
-    pygame.mixer.pre_init(channels=2, buffer=1024)
-    pygame.mixer.init()
-
-    one_second_bytes_length = 4 * 44100
     app.sounds = {}
-    sounds_file_list = os.listdir(cfg.getpath('SOUNDS', 'sounds_path'))
-    for sound in sounds_file_list:
+    app.sounds_timer = None
+    app.sounds_countdown_delay = None
+
+    sounds_path = cfg.getpath('SOUNDS', 'sounds_path')
+    if not osp.isdir(sounds_path):
+        LOGGER.warning("Sounds directory '%s' not found, sound effects are disabled", sounds_path)
+        return
+
+    try:
+        pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=1024)
+        pygame.mixer.init()
+    except pygame.error as ex:
+        LOGGER.warning("Can not initialize audio mixer (%s), sound effects are disabled", ex)
+        return
+
+    for sound in os.listdir(sounds_path):
         if sound.endswith(".wav"):
-            app.sounds[sound[:-4]] = pygame.mixer.Sound(os.path.join(cfg.getpath('SOUNDS', 'sounds_path'), sound))
+            try:
+                app.sounds[sound[:-4]] = pygame.mixer.Sound(osp.join(sounds_path, sound))
+            except pygame.error as ex:
+                LOGGER.warning("Can not load sound '%s': %s", sound, ex)
 
     # Generate countdown if files are given and not preview
-    if not "preview" in app.sounds:
-        preview_delay = int(cfg.getint("WINDOW", "preview_delay"))
-        preview_sound_raw = bytes(0)
-        for i in range(preview_delay, 0, -1):
-            if str(i) in app.sounds:
-                raw_sound = app.sounds[str(i)].get_raw()
-            elif "preview_countdown" in app.sounds:
-                raw_sound = app.sounds["preview_countdown"].get_raw()
-            else:
-                # add one second of silence in the raw signal
-                raw_sound = bytes(one_second_bytes_length)
-
-            if len(raw_sound) > one_second_bytes_length:
-                # Sound too long
-                raw_sound = raw_sound[:one_second_bytes_length]
-            elif len(raw_sound) < one_second_bytes_length:
-                # Sound too short
-                raw_sound += bytes(one_second_bytes_length - len(raw_sound))
-            preview_sound_raw += raw_sound
-
-        # preview_sound_raw = app.sounds["preview_countdown"].get_raw()
-        if preview_sound_raw:
-            app.sounds["preview"] = pygame.mixer.Sound(preview_sound_raw)
+    if "preview" not in app.sounds:
+        update_countdown(app, cfg)
 
 
 @pibooth.hookimpl
-def pibooth_cleanup():
+def pibooth_cleanup(app):
     """Quit the mixer
     """
+    stop_delayed_sound(app)
     pygame.mixer.quit()
 
 # --- Wait State ---------------------------------------------------------------
@@ -121,19 +168,22 @@ def state_chosen_enter(app):
 
 
 @pibooth.hookimpl
-def state_preview_enter(app):
+def state_preview_enter(app, cfg):
     """Actions performed when application enter in Preview state.
     """
+    if getattr(app, 'sounds_countdown_delay', None) is not None:
+        # Countdown generated by the plugin, preview delay may have been changed
+        update_countdown(app, cfg)
     handle_sounds(app, "preview")
 
 # --- Capture State ------------------------------------------------------------
 
 
 @pibooth.hookimpl
-def state_capture_enter(app):
+def state_capture_enter(app, cfg):
     """Actions performed when application enter in Capture state.
     """
-    handle_sounds(app, "capture")
+    handle_sounds(app, "capture", cfg.getfloat('SOUNDS', 'capture_delay'))
 
 # --- Processing State ---------------------------------------------------------
 
@@ -160,4 +210,4 @@ def state_print_enter(app):
 def state_finish_enter(app):
     """Actions performed when application enter in Finish state.
     """
-    handle_sounds(app, "wait")
+    handle_sounds(app, "finish")

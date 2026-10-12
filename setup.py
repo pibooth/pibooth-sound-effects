@@ -24,13 +24,13 @@ def main():
             'Environment :: Plugins',
             'Intended Audience :: Developers',
             'Intended Audience :: End Users/Desktop',
-            'License :: OSI Approved :: GNU Affero General Public License v3',
+            'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
             'Natural Language :: English',
             'Operating System :: POSIX :: Linux',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8',
-            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
+            'Programming Language :: Python :: 3.11',
+            'Programming Language :: Python :: 3.12',
+            'Programming Language :: Python :: 3.13',
             'Topic :: Multimedia :: Graphics :: Capture :: Digital Camera',
         ],
         author="Vincent Verdeil, Antoine Rousseaux",
@@ -45,12 +45,12 @@ def main():
             'pygame'
         ],
         packages=['pibooth_sound_effects'],
-        python_requires=">=3.6",
+        python_requires=">=3.10",
         install_requires=[
             'pibooth>=2.0.0',
         ],
         include_package_data=True,
-        zip_safe=True,  # Don't install the lib as an .egg zipfile
+        zip_safe=False,  # Don't install the lib as an .egg zipfile
         entry_points={'pibooth': ["pibooth_sound_effects = pibooth_sound_effects.plugin"]},
     )
 

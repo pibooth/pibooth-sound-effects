@@ -1,1 +1,2 @@
 include pibooth_sound_effects/sounds/*.wav
+include CHANGELOG.rst
